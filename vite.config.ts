@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react()].filter(Boolean),
+  base: "/feature_activations/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

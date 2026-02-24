@@ -62,7 +62,7 @@ export default function FileLoader({ onLoaded }: FileLoaderProps) {
     setProgress(0);
     setStatus("Downloading…");
     try {
-      const resp = await fetch("/data/feature_windows_enhanced.json.gz");
+      const resp = await fetch(`${import.meta.env.BASE_URL}data/feature_windows_enhanced.json.gz`);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       setProgress(30);
       const buffer = await resp.arrayBuffer();

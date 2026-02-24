@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import type { FeatureWindowsFile } from "@/types/sae";
 
-type SortKey = "mention_rate" | "mean_when_active";
+type SortKey = "mention_rate" | "mean_when_active" | "mean_all";
 
 interface FeatureSelectorProps {
   data: FeatureWindowsFile;
@@ -53,6 +53,16 @@ export default function FeatureSelector({
           Mention Rate
         </button>
         <button
+          onClick={() => onSortKeyChange("mean_all")}
+          className={`px-2 py-1 text-xs rounded transition-colors ${
+            sortKey === "mean_all"
+              ? "bg-primary text-primary-foreground"
+              : "bg-secondary text-secondary-foreground hover:bg-muted"
+          }`}
+        >
+          Mean Activation
+        </button>
+        <button
           onClick={() => onSortKeyChange("mean_when_active")}
           className={`px-2 py-1 text-xs rounded transition-colors ${
             sortKey === "mean_when_active"
@@ -78,6 +88,7 @@ export default function FeatureSelector({
           const mr = entry.mention_rate;
           const nnz = entry.nnz_count;
           const mwa = entry.mean_when_active;
+          const ma = entry.mean_all;
           return (
             <button
               key={entry.feature_id}
@@ -95,6 +106,8 @@ export default function FeatureSelector({
                 nnz: {nnz ?? "–"}
                 {" · "}
                 mwa: {mwa.toFixed(4) ?? "–"}
+                {" · "}
+                ma: {ma.toFixed(4) ?? "–"}
               </span>
             </button>
           );

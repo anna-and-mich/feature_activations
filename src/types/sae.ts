@@ -34,6 +34,7 @@ export type FeatureEntry = {
   examples: FeatureExample[];
   mention_rate: number;
   nnz_count: number;
+  mean_when_active: number;
 };
 
 export type Meta = {

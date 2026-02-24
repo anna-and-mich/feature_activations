@@ -9,12 +9,7 @@ const Index = () => {
   const [data, setData] = useState<FeatureWindowsFile | null>(null);
   const [selectedFeatureId, setSelectedFeatureId] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<"score" | "mean_act">("score");
-  const [featureSortKey, setFeatureSortKey] = useState<"mention_rate" | "mean_when_active">("mention_rate");
-
-  const featureIds = useMemo(() => {
-    if (!data) return [];
-    return Object.keys(data.features).map(Number).sort((a, b) => a - b);
-  }, [data]);
+  const [featureSortKey, setFeatureSortKey] = useState<"mention_rate" | "mean_when_active" | "mean_all">("mention_rate");
 
   const handleLoaded = useCallback((d: FeatureWindowsFile) => {
     setData(d);

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import type { FeatureWindowsFile } from "@/types/sae";
 
-type SortKey = "mention_rate" | "nnz_count";
+type SortKey = "mention_rate" | "mean_when_active";
 
 interface FeatureSelectorProps {
   data: FeatureWindowsFile;
@@ -41,7 +41,7 @@ export default function FeatureSelector({
       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Feature ID
       </label>
-      {/* <div className="flex gap-1 mb-1">
+      <div className="flex gap-1 mb-1">
         <button
           onClick={() => onSortKeyChange("mention_rate")}
           className={`px-2 py-1 text-xs rounded transition-colors ${
@@ -53,16 +53,16 @@ export default function FeatureSelector({
           Mention Rate
         </button>
         <button
-          onClick={() => onSortKeyChange("nnz_count")}
+          onClick={() => onSortKeyChange("mean_when_active")}
           className={`px-2 py-1 text-xs rounded transition-colors ${
-            sortKey === "nnz_count"
+            sortKey === "mean_when_active"
               ? "bg-primary text-primary-foreground"
               : "bg-secondary text-secondary-foreground hover:bg-muted"
           }`}
         >
-          NNZ Count
+          Mean when Active
         </button>
-      </div> */}
+      </div>
       <input
         type="text"
         placeholder="Search feature…"
@@ -77,6 +77,7 @@ export default function FeatureSelector({
         {filtered.map((entry) => {
           const mr = entry.mention_rate;
           const nnz = entry.nnz_count;
+          const mwa = entry.mean_when_active;
           return (
             <button
               key={entry.feature_id}
@@ -92,6 +93,8 @@ export default function FeatureSelector({
                 mr: {mr != null ? (mr * 100).toFixed(2) + "%" : "–"}
                 {" · "}
                 nnz: {nnz ?? "–"}
+                {" · "}
+                mwa: {mwa.toFixed(4) ?? "–"}
               </span>
             </button>
           );

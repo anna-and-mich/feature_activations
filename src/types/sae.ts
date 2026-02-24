@@ -35,6 +35,7 @@ export type FeatureEntry = {
   mention_rate: number;
   nnz_count: number;
   mean_when_active: number;
+  mean_all: number;
 };
 
 export type Meta = {

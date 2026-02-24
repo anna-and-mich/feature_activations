@@ -103,11 +103,9 @@ export default function FeatureSelector({
               <span className="ml-2 text-xs text-muted-foreground">
                 mr: {mr != null ? (mr * 100).toFixed(2) + "%" : "–"}
                 {" · "}
-                nnz: {nnz ?? "–"}
+                ma: {ma.toFixed(4) ?? "–"}
                 {" · "}
                 mwa: {mwa.toFixed(4) ?? "–"}
-                {" · "}
-                ma: {ma.toFixed(4) ?? "–"}
               </span>
             </button>
           );

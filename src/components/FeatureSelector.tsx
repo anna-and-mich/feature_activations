@@ -24,8 +24,8 @@ export default function FeatureSelector({
     const entries = Object.values(data.features);
     // Get the stat from the first example of each feature
     entries.sort((a, b) => {
-      const aVal = a.examples[0]?.[sortKey] ?? 0;
-      const bVal = b.examples[0]?.[sortKey] ?? 0;
+      const aVal = a[sortKey] ?? 0;
+      const bVal = b[sortKey] ?? 0;
       return bVal - aVal;
     });
     return entries;
@@ -41,7 +41,7 @@ export default function FeatureSelector({
       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Feature ID
       </label>
-      <div className="flex gap-1 mb-1">
+      {/* <div className="flex gap-1 mb-1">
         <button
           onClick={() => onSortKeyChange("mention_rate")}
           className={`px-2 py-1 text-xs rounded transition-colors ${
@@ -62,7 +62,7 @@ export default function FeatureSelector({
         >
           NNZ Count
         </button>
-      </div>
+      </div> */}
       <input
         type="text"
         placeholder="Search feature…"

@@ -95,15 +95,15 @@ export default function FileLoader({ onLoaded }: FileLoaderProps) {
           chunks.push(value);
           receivedBytes += value.byteLength;
 
-          setStatus(`Downloading… ${Math.round(receivedBytes/1024/1024)} MB`)
-
           if (totalBytes && totalBytes > 0) {
+            setStatus(`Downloading… ${Math.round(receivedBytes/1024/1024)} MB / ${Math.round(totalBytes/1024/1024)} MB`)
             const pct = Math.min(
               DOWNLOAD_PORTION,
               Math.round((receivedBytes / totalBytes) * DOWNLOAD_PORTION)
             );
             setProgress(pct);
           } else {
+            setStatus(`Downloading… ${Math.round(receivedBytes/1024/1024)} MB`)
             // No total size known: still show some movement (0..DOWNLOAD_PORTION)
             // This is heuristic; tweak as desired
             const pct = Math.min(

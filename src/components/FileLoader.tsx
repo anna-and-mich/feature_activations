@@ -61,19 +61,80 @@ export default function FileLoader({ onLoaded }: FileLoaderProps) {
     setError(null);
     setProgress(0);
     setStatus("Downloading…");
+
     try {
-      const resp = await fetch(`${import.meta.env.BASE_URL}data/feature_windows_enhanced.json.gz`);
+      const resp = await fetch(
+        `${import.meta.env.BASE_URL}data/feature_windows_enhanced.json.gz`
+      );
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      setProgress(30);
-      const buffer = await resp.arrayBuffer();
-      setProgress(60);
-      await processBuffer(buffer);
+
+      // If the browser doesn't support streaming, fall back
+      if (!resp.body) {
+        setProgress(30);
+        const buffer = await resp.arrayBuffer();
+        setProgress(60);
+        await processBuffer(buffer);
+        return;
+      }
+
+      // Total size (may be null if server doesn't send Content-Length)
+      const contentLengthHeader = resp.headers.get("Content-Length");
+      const totalBytes = contentLengthHeader ? Number(contentLengthHeader) : null;
+
+      const reader = resp.body.getReader();
+      const chunks: Uint8Array[] = [];
+      let receivedBytes = 0;
+
+      // Reserve, e.g., 0–80% for download, 80–100% for processing
+      const DOWNLOAD_PORTION = 80;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          chunks.push(value);
+          receivedBytes += value.byteLength;
+
+          setStatus(`Downloading… ${Math.round(receivedBytes/1024/1024)} MB`)
+
+          if (totalBytes && totalBytes > 0) {
+            const pct = Math.min(
+              DOWNLOAD_PORTION,
+              Math.round((receivedBytes / totalBytes) * DOWNLOAD_PORTION)
+            );
+            setProgress(pct);
+          } else {
+            // No total size known: still show some movement (0..DOWNLOAD_PORTION)
+            // This is heuristic; tweak as desired
+            const pct = Math.min(
+              DOWNLOAD_PORTION,
+              5 + Math.floor(Math.log10(receivedBytes + 1) * 15)
+            );
+            setProgress(pct);
+          }
+        }
+      }
+
+      // Stitch chunks into a single ArrayBuffer
+      const all = new Uint8Array(receivedBytes);
+      let offset = 0;
+      for (const c of chunks) {
+        all.set(c, offset);
+        offset += c.byteLength;
+      }
+
+      setStatus("Processing…");
+      setProgress(DOWNLOAD_PORTION);
+      await processBuffer(all.buffer);
+      setProgress(100);
+      setStatus("Done");
     } catch (e: any) {
       console.error("Fetch error:", e);
       setError(e.message ?? "Failed to fetch bundled file");
       setProgress(null);
     }
   }, [processBuffer]);
+
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
